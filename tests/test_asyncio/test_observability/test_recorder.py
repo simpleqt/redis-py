@@ -539,7 +539,7 @@ class TestHidePubSubChannelNames:
         with patch("redis.observability.metrics.OTEL_AVAILABLE", True):
             collector = RedisMetricsCollector(mock_meter, config)
 
-        # Note: _get_or_create_collector is sync, _get_config is still async
+        # Note: _get_config is still async
         with patch.object(recorder, "_async_metrics_collector", collector):
             with patch.object(
                 recorder,
@@ -642,7 +642,7 @@ class TestRecordStreamingLagFromResponse:
         with patch("redis.observability.metrics.OTEL_AVAILABLE", True):
             collector = RedisMetricsCollector(mock_meter, config)
 
-        # Note: _get_or_create_collector is sync, _get_config is still async
+        # Note: _get_config is still async
         with patch.object(recorder, "_async_metrics_collector", collector):
             with patch.object(
                 recorder,
@@ -885,7 +885,6 @@ class TestRecorderDisabled:
         """Test that recording does nothing when collector is None."""
         recorder.reset_collector()
 
-        # Note: _get_or_create_collector is sync
         with (
             patch.object(recorder, "_async_metrics_collector", None),
             patch.object(recorder, "_async_collector_resolved", True),
@@ -904,7 +903,6 @@ class TestRecorderDisabled:
         """Test is_enabled returns False when collector is None."""
         recorder.reset_collector()
 
-        # Note: _get_or_create_collector is sync
         with (
             patch.object(recorder, "_async_metrics_collector", None),
             patch.object(recorder, "_async_collector_resolved", True),
@@ -917,7 +915,6 @@ class TestRecorderDisabled:
         """Test that all record functions are safe to call when disabled."""
         recorder.reset_collector()
 
-        # Note: _get_or_create_collector is sync
         with (
             patch.object(recorder, "_async_metrics_collector", None),
             patch.object(recorder, "_async_collector_resolved", True),
