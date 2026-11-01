@@ -6608,6 +6608,11 @@ class TransactionStrategy(AbstractStrategy):
         for r, cmd in zip(response, self._command_queue):
             if not isinstance(r, Exception):
                 command_name = cmd.args[0]
+                # The keys option is only for the client cache and is
+                # not an option of the callbacks
+                cmd.options.pop("keys", None)
+                if command_name in redis_node.response_callbacks:
+                    r = redis_node.response_callbacks[command_name](r, **cmd.options)
                 if command_name in self._pipe.cluster_response_callbacks:
                     r = self._pipe.cluster_response_callbacks[command_name](
                         r, **cmd.options
